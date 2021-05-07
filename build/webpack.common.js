@@ -4,6 +4,7 @@ const HtmlWebpackPlugin = require('html-webpack-plugin')
 const AddAssetHtmlPlugin = require('add-asset-html-webpack-plugin')
 const CopyWebpackPlugin = require('copy-webpack-plugin')
 const TerserPlugin = require('terser-webpack-plugin')
+const { getDllFiles } = require('./utils')
 
 module.exports = {
   entry: {
@@ -11,7 +12,7 @@ module.exports = {
   },
   output: {
     path: path.resolve(__dirname, '../dist'),
-    filename: '[name].main.js',
+    filename: 'js/[name].main.js',
     publicPath: '/',
   },
   resolve: {
@@ -25,7 +26,9 @@ module.exports = {
       template: path.resolve(__dirname, '../public/index.html'),
       filename: 'index.html',
       favicon: '',
-      publicPath: 'auto',
+      inject: 'body',
+      minify: false,
+      dllJs: getDllFiles().map(item => `/dll/${item}`),
     }),
     // 核心基本依赖（模块公共依赖）配置(打包优化，以下为预先打包，从打包过程中排除它们)
     new webpack.DllReferencePlugin({
@@ -38,11 +41,11 @@ module.exports = {
       manifest: require('../public/dll/echarts_core.manifest.json'),
     }),
 
-    new AddAssetHtmlPlugin({
-      filepath: path.resolve(__dirname, '../public/dll/*.js'),
-      publicPath: '/dll',
-      outputPath: '/dll',
-    }),
+    // new AddAssetHtmlPlugin({
+    //   filepath: path.resolve(__dirname, '../public/dll/*.js'),
+    //   publicPath: '/dll',
+    //   outputPath: '/dll',
+    // }),
 
     new CopyWebpackPlugin({
       patterns: [
@@ -74,7 +77,7 @@ module.exports = {
         },
       },
       {
-        test: /\.tsx?$/,
+        test: /\.(ts|tsx)?$/,
         use: 'ts-loader',
         exclude: /node_modules/,
       },
@@ -92,26 +95,7 @@ module.exports = {
       },
       {
         test: /\.css$/,
-        use: [
-          'style-loader',
-          'css-loader',
-          {
-            loader: 'postcss-loader',
-            options: {
-              sourceMap: true,
-              postcssOptions: {
-                plugins: [
-                  [
-                    'autoprefixer',
-                    {
-                      // Options
-                    },
-                  ],
-                ],
-              },
-            },
-          },
-        ],
+        use: ['style-loader', 'css-loader', 'postcss-loader'],
       },
     ],
   },
