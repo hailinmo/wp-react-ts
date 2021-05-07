@@ -11,7 +11,7 @@ const webpackConfig = merge(commonConfig, {
     contentBase: path.join(__dirname, '../dist'),
     open: false,
     hot: true,
-    quiet: true,
+    // quiet: true,
     port: 8082,
   },
 })

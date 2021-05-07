@@ -8,13 +8,8 @@ module.exports = {
     react_core: [
       'react',
       'react-dom',
+      'react-router-dom'
     ],
-    tools_core: [
-      'lodash',
-    ],
-    echarts_core: [
-      'echarts',
-    ]
   },
   optimization: {
     minimize: true,

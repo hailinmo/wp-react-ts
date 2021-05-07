@@ -16,6 +16,7 @@ module.exports = {
     publicPath: '/',
   },
   resolve: {
+    extensions: ['.js', '.ts', '.tsx', '.json'],
     alias: {
       '@': path.resolve(__dirname, '../src'),
     },
@@ -33,12 +34,6 @@ module.exports = {
     // 核心基本依赖（模块公共依赖）配置(打包优化，以下为预先打包，从打包过程中排除它们)
     new webpack.DllReferencePlugin({
       manifest: require('../public/dll/react_core.manifest.json'),
-    }),
-    new webpack.DllReferencePlugin({
-      manifest: require('../public/dll/tools_core.manifest.json'),
-    }),
-    new webpack.DllReferencePlugin({
-      manifest: require('../public/dll/echarts_core.manifest.json'),
     }),
 
     // new AddAssetHtmlPlugin({

@@ -1,9 +1,8 @@
 html,
 body {
+  height: 100%;
   background-color: rgb(238, 233, 226);
 }
-.example {
-  background-image: url(@/assets/icon.png);
-  background-repeat: no-repeat;
-  height: 100px;
+#root {
+  height: 100%;
 }

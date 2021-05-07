@@ -1,11 +1,14 @@
 import React from 'react'
 import ReactDOM from 'react-dom'
 
+import LayoutView from './layout/index'
+
+import 'antd/dist/antd.css'
 import '@/styles/index.css'
 import '@/styles/tailwind.css'
 
 const App = () => {
-  return <div className="example h-3">hello world</div>
+  return <LayoutView />
 }
 
 ReactDOM.render(<App />, document.getElementById('root'))

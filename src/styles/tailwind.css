@@ -1,3 +1,6 @@
-@import "tailwindcss/base";
-@import "tailwindcss/components";
+/* 基础重置统一样式 */
+/* @import "tailwindcss/base"; */
+/* 断点样式 */
+/* @import "tailwindcss/components"; */
+/* 功能样式，大小宽高 */
 @import "tailwindcss/utilities";
