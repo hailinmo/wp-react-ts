@@ -5,7 +5,6 @@ const AddAssetHtmlPlugin = require('add-asset-html-webpack-plugin')
 const CopyWebpackPlugin = require('copy-webpack-plugin')
 const TerserPlugin = require('terser-webpack-plugin')
 const tsImportPluginFactory = require('ts-import-plugin')
-const { getDllFiles } = require('./utils')
 
 module.exports = {
   entry: {
@@ -30,7 +29,6 @@ module.exports = {
       favicon: path.resolve(__dirname, '../public/favicon.ico'),
       inject: 'body',
       minify: false,
-      // dllJs: getDllFiles().map(item => `/dll/${item}`),
     }),
     // 核心基本依赖（模块公共依赖）配置(打包优化，以下为预先打包，从打包过程中排除它们)
     new webpack.DllReferencePlugin({
@@ -63,39 +61,44 @@ module.exports = {
   module: {
     rules: [
       {
-        test: /.m?js$/,
+        test: /.(m?js|ts|tsx)$/,
         exclude: /node_modules/,
         use: {
           loader: 'babel-loader',
           options: {
-            presets: ['@babel/preset-env'],
+            presets: [
+              '@babel/preset-env',
+              '@babel/preset-react',
+              '@babel/preset-typescript',
+            ],
+            // plugins: [['import', { libraryName: 'antd', style: 'css' }]], // 插件无效，与babel7不兼容
           },
         },
       },
-      {
-        test: /\.(ts|tsx)?$/,
-        use: [
-          {
-            loader: 'ts-loader',
-            options: {
-              transpileOnly: true,
-              getCustomTransformers: () => ({
-                before: [
-                  tsImportPluginFactory({
-                    libraryName: 'antd',
-                    libraryDirectory: 'lib',
-                    style: 'css',
-                  }),
-                ],
-              }),
-              compilerOptions: {
-                module: 'es2015',
-              },
-            },
-          },
-        ],
-        exclude: /node_modules/,
-      },
+      // {
+      //   test: /\.(ts|tsx)?$/,
+      //   use: [
+      //     {
+      //       loader: 'ts-loader',
+      //       options: {
+      //         transpileOnly: true,
+      //         getCustomTransformers: () => ({
+      //           before: [
+      //             tsImportPluginFactory({
+      //               libraryName: 'antd', // 此方案可达到按需加载css的目的；
+      //               libraryDirectory: 'lib',
+      //               style: 'css',
+      //             }),
+      //           ],
+      //         }),
+      //         compilerOptions: {
+      //           module: 'es2015',
+      //         },
+      //       },
+      //     },
+      //   ],
+      //   exclude: /node_modules/,
+      // },
       {
         test: /\.(gif|jpg|png|woff|svg|eot|ttf|pdf)(?!.js)\??.*$/,
         use: [
@@ -112,18 +115,18 @@ module.exports = {
         test: /\.(css|less)$/,
         use: ['style-loader', 'css-loader', 'postcss-loader', 'less-loader'],
       },
-      // {
-      //   test: /\.(sass|scss)$/,
-      //   use: [
-      //     'style-loader',
-      //     'css-loader',
-      //     {
-      //       loader: 'sass-loader',
-      //       options: { implementation: require('sass') },
-      //     },
-      //     'postcss-loader',
-      //   ],
-      // },
+      {
+        test: /\.(sass|scss)$/,
+        use: [
+          'style-loader',
+          'css-loader',
+          {
+            loader: 'sass-loader',
+            options: { implementation: require('sass') },
+          },
+          'postcss-loader',
+        ],
+      },
     ],
   },
 }

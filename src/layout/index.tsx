@@ -1,9 +1,10 @@
 import React, { Suspense } from 'react'
-import { Layout, Menu } from 'antd'
-import { BrowserRouter as Router, Route } from 'react-router-dom'
+import { Layout, Menu, Spin } from 'antd'
+import { BrowserRouter as Router, Route, Switch } from 'react-router-dom'
 
 import RouterMenu, { RouterDict } from '../router/index'
 import SideMenu from './side-menu'
+import Error404 from '@/pages/404/index'
 
 const { Header, Content, Sider } = Layout
 
@@ -33,23 +34,27 @@ const Frame: React.FC = () => {
             <Menu.Item key="3">nav 3</Menu.Item>
           </Menu>
         </Header>
+
         <Layout>
           <Sider width={200} className="overflow-y-auto overflow-x-hidden">
             <SideMenu />
           </Sider>
           <Layout className="p-4">
-            <Content>
-              <Suspense fallback={<div>Loading...</div>}>
-                {myRouter.map((route) => (
-                  <Route
-                    exact
-                    key={route.name}
-                    path={route.path}
-                    component={route.component}
-                  />
-                ))}
-              </Suspense>
-            </Content>
+            <Suspense fallback={<Spin />}>
+              <Content>
+                <Switch>
+                  {myRouter.map((route) => (
+                    <Route
+                      exact
+                      key={route.name}
+                      path={route.path}
+                      component={route.component}
+                    />
+                  ))}
+                  <Route component={Error404} />
+                </Switch>
+              </Content>
+            </Suspense>
           </Layout>
         </Layout>
       </Layout>
