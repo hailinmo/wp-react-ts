@@ -20,7 +20,7 @@ module.exports = {
     ],
   },
   output: {
-    path: path.join(__dirname, '../public/dll'),
+    path: path.join(__dirname, '../dll'),
     filename: '[name].bundle.[hash:7].js',
     library: '[name]_library',
     libraryTarget: 'umd'
@@ -30,7 +30,7 @@ module.exports = {
       cleanOnceBeforeBuildPatterns: ['!css*']
     }),
     new webpack.DllPlugin({
-      path: path.join(__dirname, '../public/dll', '[name].manifest.json'),
+      path: path.join(__dirname, '../dll', '[name].manifest.json'),
       name: '[name]_library'
     })
   ]

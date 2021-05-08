@@ -9,7 +9,7 @@ const SideMenu: React.FC = () => {
     return menu.map((item) => {
       if (item.children) {
         return (
-          <SubMenu key={item.path} icon={item.icon} title={item.name}>
+          <SubMenu key={item.name} icon={item.icon} title={item.name}>
             {renderMenu(item.children)}
           </SubMenu>
         )
@@ -22,6 +22,7 @@ const SideMenu: React.FC = () => {
       }
     })
   }
+  const myMenu = renderMenu(RouterMenu)
 
   const myRouter: Array<RouterDict> = []
   const getRouterList = (menu: Array<RouterDict>) => {
@@ -34,15 +35,14 @@ const SideMenu: React.FC = () => {
     })
   }
   getRouterList(RouterMenu)
-  const myMenu = renderMenu(RouterMenu)
 
   const { pathname } = useLocation()
-  const openKeys: string[] = []
+
   return (
     <Menu
       mode="inline"
       defaultSelectedKeys={[pathname]}
-      defaultOpenKeys={openKeys}
+      defaultOpenKeys={[]}
       style={{ height: '100%', borderRight: 0 }}
     >
       {myMenu}

@@ -4,6 +4,7 @@ const HtmlWebpackPlugin = require('html-webpack-plugin')
 const AddAssetHtmlPlugin = require('add-asset-html-webpack-plugin')
 const CopyWebpackPlugin = require('copy-webpack-plugin')
 const TerserPlugin = require('terser-webpack-plugin')
+const tsImportPluginFactory = require('ts-import-plugin')
 const { getDllFiles } = require('./utils')
 
 module.exports = {
@@ -12,7 +13,7 @@ module.exports = {
   },
   output: {
     path: path.resolve(__dirname, '../dist'),
-    filename: 'js/[name].main.js',
+    filename: 'js/[name].[contenthash:8].js',
     publicPath: '/',
   },
   resolve: {
@@ -26,21 +27,21 @@ module.exports = {
       title: '测试',
       template: path.resolve(__dirname, '../public/index.html'),
       filename: 'index.html',
-      favicon: '',
+      favicon: path.resolve(__dirname, '../public/favicon.ico'),
       inject: 'body',
       minify: false,
-      dllJs: getDllFiles().map(item => `/dll/${item}`),
+      // dllJs: getDllFiles().map(item => `/dll/${item}`),
     }),
     // 核心基本依赖（模块公共依赖）配置(打包优化，以下为预先打包，从打包过程中排除它们)
     new webpack.DllReferencePlugin({
-      manifest: require('../public/dll/react_core.manifest.json'),
+      manifest: require('../dll/react_core.manifest.json'),
     }),
 
-    // new AddAssetHtmlPlugin({
-    //   filepath: path.resolve(__dirname, '../public/dll/*.js'),
-    //   publicPath: '/dll',
-    //   outputPath: '/dll',
-    // }),
+    new AddAssetHtmlPlugin({
+      filepath: path.resolve(__dirname, '../dll/*.js'),
+      publicPath: '/dll',
+      outputPath: '../dist/dll',
+    }),
 
     new CopyWebpackPlugin({
       patterns: [
@@ -55,7 +56,7 @@ module.exports = {
     minimize: true,
     minimizer: [
       new TerserPlugin({
-        extractComments: false,
+        extractComments: false, // 去除打包生成的LICENSE文件;
       }),
     ],
   },
@@ -73,7 +74,26 @@ module.exports = {
       },
       {
         test: /\.(ts|tsx)?$/,
-        use: 'ts-loader',
+        use: [
+          {
+            loader: 'ts-loader',
+            options: {
+              transpileOnly: true,
+              getCustomTransformers: () => ({
+                before: [
+                  tsImportPluginFactory({
+                    libraryName: 'antd',
+                    libraryDirectory: 'lib',
+                    style: 'css',
+                  }),
+                ],
+              }),
+              compilerOptions: {
+                module: 'es2015',
+              },
+            },
+          },
+        ],
         exclude: /node_modules/,
       },
       {
@@ -89,9 +109,21 @@ module.exports = {
         ],
       },
       {
-        test: /\.css$/,
-        use: ['style-loader', 'css-loader', 'postcss-loader'],
+        test: /\.(css|less)$/,
+        use: ['style-loader', 'css-loader', 'postcss-loader', 'less-loader'],
       },
+      // {
+      //   test: /\.(sass|scss)$/,
+      //   use: [
+      //     'style-loader',
+      //     'css-loader',
+      //     {
+      //       loader: 'sass-loader',
+      //       options: { implementation: require('sass') },
+      //     },
+      //     'postcss-loader',
+      //   ],
+      // },
     ],
   },
 }

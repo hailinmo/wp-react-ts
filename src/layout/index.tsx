@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { Suspense } from 'react'
 import { Layout, Menu } from 'antd'
 import { BrowserRouter as Router, Route } from 'react-router-dom'
 
@@ -39,14 +39,16 @@ const Frame: React.FC = () => {
           </Sider>
           <Layout className="p-4">
             <Content>
-              {myRouter.map((route) => (
-                <Route
-                  exact
-                  key={route.name}
-                  path={route.path}
-                  component={route.component}
-                />
-              ))}
+              <Suspense fallback={<div>Loading...</div>}>
+                {myRouter.map((route) => (
+                  <Route
+                    exact
+                    key={route.name}
+                    path={route.path}
+                    component={route.component}
+                  />
+                ))}
+              </Suspense>
             </Content>
           </Layout>
         </Layout>

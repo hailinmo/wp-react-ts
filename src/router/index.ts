@@ -1,4 +1,4 @@
-import Home from '../views/home/index'
+import React from 'react'
 declare interface RouterDict {
   name: string
   path?: any
@@ -12,7 +12,9 @@ const RouterMenu: Array<RouterDict> = [
     name: 'Home',
     path: '/home',
     auth: true,
-    component: Home,
+    component: React.lazy(
+      () => import(/* webpackChunkName: "home" */ '@/views/home/index')
+    ),
   },
   {
     name: 'Options1',
@@ -22,13 +24,20 @@ const RouterMenu: Array<RouterDict> = [
         name: 'Options1-1',
         path: '/1-1',
         auth: true,
-        component: Home,
+        component: React.lazy(
+          () =>
+            import(
+              /* webpackChunkName: "dashboard" */ '@/views/dashboard/index'
+            )
+        ),
       },
       {
         name: 'Options1-2',
         path: '/1-2',
         auth: true,
-        component: Home,
+        component: React.lazy(
+          () => import(/* webpackChunkName: "about" */ '@/views/about/index')
+        ),
       },
     ],
   },
