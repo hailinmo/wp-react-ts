@@ -1,9 +1,15 @@
-import React from 'react'
+import React, { useState } from 'react'
 import './index.css'
+
+import { Content, Banner } from './components/index'
+
 const Home: React.FC = () => {
+  const [name, setName] = useState('zhaoyue')
   return (
     <div>
       <h2 className="home">Home</h2>
+      <Content name={name} onSetName={(value: string) => setName(value)} />
+      <Banner />
     </div>
   )
 }
