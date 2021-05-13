@@ -1,6 +1,6 @@
 import React from 'react'
 import LayoutView from './layout/index'
-import ComponentProvider from './context'
+import ComponentProvider from './store/index'
 
 const App: React.FC = () => {
   return (

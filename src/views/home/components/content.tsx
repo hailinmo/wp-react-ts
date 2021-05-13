@@ -1,9 +1,9 @@
-import React, { ReactPropTypes, useContext } from 'react'
+import React, { useContext } from 'react'
 import { ThemeContext } from '@/context'
 
-interface ContentProps extends ReactPropTypes {
+interface ContentProps {
   name: string
-  onSetName: React.SetStateAction<string>
+  onSetName: (value: string) => void
 }
 
 const Content: React.FC<ContentProps> = ({ name, onSetName }: ContentProps) => {

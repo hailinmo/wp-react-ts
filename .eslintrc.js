@@ -22,6 +22,6 @@ module.exports = {
   rules: {
     'prettier/prettier': ['error', { singleQuote: true, semi: false }],
     '@typescript-eslint/no-explicit-any': 'off',
-    'react/prop-types': [2, { ignore: ['children'] }],
+    '@typescript-eslint/explicit-module-boundary-types': 'off',
   },
 }

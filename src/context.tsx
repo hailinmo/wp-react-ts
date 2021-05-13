@@ -13,7 +13,7 @@ const initialState = {
 }
 
 export const ThemeContext = React.createContext(initialState)
-const ComponentProvider: React.FC = ({ children }) => {
+const ComponentProvider: React.FC = ({ children }: Props) => {
   const themeReducer = (state: state, action: string) => {
     switch (action) {
       case 'dark':
