@@ -7,6 +7,7 @@ const TerserPlugin = require('terser-webpack-plugin')
 const tsImportPluginFactory = require('ts-import-plugin')
 
 module.exports = {
+  target: 'web',
   entry: {
     app: './src/index.tsx',
   },
