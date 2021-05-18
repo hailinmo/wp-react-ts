@@ -7,3 +7,6 @@ declare interface Props {
   className?: string
   string?: any
 }
+interface Window {
+  [propName: string]: any
+}

@@ -4,6 +4,11 @@ module.exports = {
     node: true,
     es2021: true,
   },
+  settings: {
+    react: {
+      version: 'detect',
+    },
+  },
   extends: [
     'eslint:recommended',
     'plugin:react/recommended',
@@ -18,7 +23,7 @@ module.exports = {
     ecmaVersion: 12,
     sourceType: 'module',
   },
-  plugins: ['react', '@typescript-eslint'],
+  plugins: ['react', '@typescript-eslint', 'prettier'],
   rules: {
     'prettier/prettier': ['error', { singleQuote: true, semi: false }],
     '@typescript-eslint/no-explicit-any': 'off',

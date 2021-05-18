@@ -6,7 +6,7 @@ import './index.css'
 const Home: React.FC = () => {
   const [name, setName] = useState('zhaosanfen')
   return (
-    <div>
+    <div className="bg">
       <h2 className="home">Home</h2>
       {/* <Content name={name} onSetName={(value: string) => setName(value)} /> */}
       {/* <Banner /> */}

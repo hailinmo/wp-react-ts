@@ -4,7 +4,6 @@ const HtmlWebpackPlugin = require('html-webpack-plugin')
 const AddAssetHtmlPlugin = require('add-asset-html-webpack-plugin')
 const CopyWebpackPlugin = require('copy-webpack-plugin')
 const TerserPlugin = require('terser-webpack-plugin')
-const tsImportPluginFactory = require('ts-import-plugin')
 
 module.exports = {
   target: 'web',
@@ -32,15 +31,15 @@ module.exports = {
       minify: false,
     }),
     // 核心基本依赖（模块公共依赖）配置(打包优化，以下为预先打包，从打包过程中排除它们)
-    new webpack.DllReferencePlugin({
-      manifest: require('../dll/react_core.manifest.json'),
-    }),
+    // new webpack.DllReferencePlugin({
+    //   manifest: require('../dll/react_core.manifest.json'),
+    // }),
 
-    new AddAssetHtmlPlugin({
-      filepath: path.resolve(__dirname, '../dll/*.js'),
-      publicPath: '/dll',
-      outputPath: '../dist/dll',
-    }),
+    // new AddAssetHtmlPlugin({
+    //   filepath: path.resolve(__dirname, '../dll/*.js'),
+    //   publicPath: '/dll',
+    //   outputPath: '../dist/dll',
+    // }),
 
     new CopyWebpackPlugin({
       patterns: [
@@ -58,6 +57,31 @@ module.exports = {
         extractComments: false, // 去除打包生成的LICENSE文件;
       }),
     ],
+    splitChunks: {
+      chunks: 'all',
+      cacheGroups: {
+        vendors: {
+          name: 'chunk-vendors',
+          test: /[\\/]node_modules[\\/]/,
+          chunks: 'initial',
+          priority: 10,
+          reuseExistingChunk: true,
+          enforce: true,
+        },
+        common: {
+          name: 'chunk-common',
+          test: /[\\/]node_modules[\\/]_?react|antd/,
+          priority: 20,
+          chunks: 'initial',
+        },
+        echarts: {
+          name: 'echarts',
+          test: /[\\/]node_modules[\\/]_?echarts|zrender/,
+          priority: 20,
+          enforce: true,
+        },
+      },
+    },
   },
   module: {
     rules: [
@@ -76,44 +100,19 @@ module.exports = {
           },
         },
       },
-      // {
-      //   test: /\.(ts|tsx)?$/,
-      //   use: [
-      //     {
-      //       loader: 'ts-loader',
-      //       options: {
-      //         transpileOnly: true,
-      //         getCustomTransformers: () => ({
-      //           before: [
-      //             tsImportPluginFactory({
-      //               libraryName: 'antd', // 此方案可达到按需加载css的目的；
-      //               libraryDirectory: 'lib',
-      //               style: 'css',
-      //             }),
-      //           ],
-      //         }),
-      //         compilerOptions: {
-      //           module: 'es2015',
-      //         },
-      //       },
-      //     },
-      //   ],
-      //   exclude: /node_modules/,
-      // },
       {
         test: /\.(gif|jpg|png|woff|svg|eot|ttf|pdf)(?!.js)\??.*$/,
-        use: [
-          {
-            loader: 'url-loader',
-            options: {
-              limit: 1024,
-              name: path.posix.join('', 'images/[name].[ext]?[hash]'),
-            },
-          },
-        ],
+        type: 'asset/resource',
+        generator: {
+          filename: 'assets/[name][hash:8].[ext]', // 单独指定 名字
+        },
       },
       {
-        test: /\.(css|less)$/,
+        test: /\.css$/,
+        use: ['style-loader', 'css-loader', 'postcss-loader'],
+      },
+      {
+        test: /\.less$/,
         use: ['style-loader', 'css-loader', 'postcss-loader', 'less-loader'],
       },
       {
@@ -121,11 +120,11 @@ module.exports = {
         use: [
           'style-loader',
           'css-loader',
+          'postcss-loader',
           {
             loader: 'sass-loader',
             options: { implementation: require('sass') },
           },
-          'postcss-loader',
         ],
       },
     ],

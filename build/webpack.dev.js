@@ -1,11 +1,12 @@
 const path = require('path')
 const { merge } = require('webpack-merge')
+const ErrorOverlayPlugin = require('error-overlay-webpack-plugin')
 
 const commonConfig = require('./webpack.common')
 
 const webpackConfig = merge(commonConfig, {
   mode: 'development',
-  // devtool: 'inline-source-map',
+  devtool: 'cheap-module-source-map',
   devServer: {
     historyApiFallback: true,
     contentBase: path.join(__dirname, '../dist'),
@@ -14,6 +15,7 @@ const webpackConfig = merge(commonConfig, {
     // quiet: true,
     port: 8082,
   },
+  plugins: [new ErrorOverlayPlugin()],
 })
 
 module.exports = webpackConfig
