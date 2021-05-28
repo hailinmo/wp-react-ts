@@ -39,6 +39,14 @@ const RouterMenu: Array<RouterDict> = [
           () => import(/* webpackChunkName: "about" */ '@/views/about/index')
         ),
       },
+      {
+        name: 'Options1-3',
+        path: '/1-3',
+        auth: true,
+        component: React.lazy(
+          () => import(/* webpackChunkName: "count" */ '@/views/count/index')
+        ),
+      },
     ],
   },
 ]
